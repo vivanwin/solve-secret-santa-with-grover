@@ -1,4 +1,4 @@
-﻿namespace Quantum.SecretSanta {
+﻿namespace QuantumSecretSanta {
 
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Intrinsic;

@@ -1,4 +1,4 @@
-﻿namespace Quantum.SecretSanta {
+﻿namespace QuantumSecretSanta {
 
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Intrinsic;
@@ -191,17 +191,24 @@
 
 
     @EntryPoint()
-    operation RunSecretSanta () : Unit {
+    operation RunSecretSanta (NumPlayers : Int) : Bool[] {
         // Simulate the raffle with 3 and with 4 people
-        for (players in 3 .. 4) {
-            Message($"Simulate the Secret Santa raffle with {players} people");
-            let totalQubits = players * players - players;        // The number of variables that will be used
-            let clauseTypes = ConstantArray(2 * players, "ONE");  // The gates that will be used, e.g. ["ONE", "ONE", ....]
-            let problem = CreateSatTerm(players);                 // The SAT problem string, e.g. [[(0, true), (1, true)]]
+        // for (players in 3 .. 4) {
+        if(NumPlayers < 3 or NumPlayers > 4){
+            Message("Number of players must be either 3 or 4");
+            return [false];
+        }
+        else{
+            Message($"Simulate the Secret Santa raffle with {NumPlayers} people");
+            let totalQubits = NumPlayers * NumPlayers - NumPlayers;     // The number of variables that will be used
+            let clauseTypes = ConstantArray(2 * NumPlayers, "ONE");     // The gates that will be used, e.g. ["ONE", "ONE", ....]
+            let problem = CreateSatTerm(NumPlayers);                    // The SAT problem string, e.g. [[(0, true), (1, true)]]
 
-            let oracle = Oracle_SAT(_, _, problem, clauseTypes);  // Create an oracle from the SAT and problem types
-            let result = RunGroversSearch(totalQubits, oracle);   // Run the Grover search on the problem
-            PrintResults(result, players);                        // Nicely print the results
+            let oracle = Oracle_SAT(_, _, problem, clauseTypes);        // Create an oracle from the SAT and problem types
+            let result = RunGroversSearch(totalQubits, oracle);         // Run the Grover search on the problem
+            PrintResults(result, NumPlayers);                           // Nicely print the results
+
+            return result;
         }
     }
 
